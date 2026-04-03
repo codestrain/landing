@@ -193,12 +193,17 @@
         .stat-card:nth-child(2) .stat-number { color: var(--drs-yellow); }
         .stat-card:nth-child(3) .stat-number { color: var(--drs-red); }
 
-        .stat-label {
+        .stat-title {
+            font-size: var(--text-sm); font-weight: 600; color: var(--text-primary);
+            margin-top: var(--sp-4); line-height: 1.4;
+        }
+        .stat-explain {
             font-size: var(--text-sm); color: var(--text-secondary);
-            margin-top: var(--sp-3); line-height: 1.5;
+            margin-top: var(--sp-2); line-height: 1.6;
         }
         .stat-source {
-            margin-top: var(--sp-3);
+            margin-top: var(--sp-4); padding-top: var(--sp-3);
+            border-top: 1px solid var(--border);
         }
         .stat-source a {
             font-size: var(--text-xs); color: var(--text-muted);
@@ -359,18 +364,21 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-number">19%</div>
-                <div class="stat-label">Slower with AI tools — yet developers believe they're 20% faster</div>
-                <div class="stat-source"><a href="https://arxiv.org/abs/2507.09089" target="_blank" rel="noopener">METR RCT, 2025 &middot; n=16 devs, 246 tasks</a></div>
+                <div class="stat-title">AI makes experienced developers slower</div>
+                <div class="stat-explain">Researchers gave 246 real coding tasks to 16 senior open-source developers. Those using AI tools took 19% longer to finish &mdash; but believed they were 20% faster. You literally cannot tell when AI is hurting your productivity.</div>
+                <div class="stat-source"><a href="https://arxiv.org/abs/2507.09089" target="_blank" rel="noopener">METR randomized controlled trial, 2025</a></div>
             </div>
             <div class="stat-card">
                 <div class="stat-number">43pt</div>
-                <div class="stat-label">Perception gap — the difference between how fast you feel and how fast you are</div>
-                <div class="stat-source"><a href="https://arxiv.org/abs/2507.09089" target="_blank" rel="noopener">METR RCT, 2025 &middot; arXiv:2507.09089</a></div>
+                <div class="stat-title">The gap between feeling fast and being fast</div>
+                <div class="stat-explain">Developers predicted AI would save them 24% of time. After using it, they still believed it saved 20%. The actual result was &minus;19%. That's a 43-point gap between perception and reality. No amount of self-awareness fixes this &mdash; you need external measurement.</div>
+                <div class="stat-source"><a href="https://arxiv.org/abs/2507.09089" target="_blank" rel="noopener">Same study: METR, arXiv:2507.09089</a></div>
             </div>
             <div class="stat-card">
                 <div class="stat-number">83%</div>
-                <div class="stat-label">Of software developers report experiencing burnout</div>
-                <div class="stat-source"><a href="https://www.haystack.tech/blog/83-percent-of-developers-suffer-from-burnout" target="_blank" rel="noopener">Haystack/Survation, 2021</a></div>
+                <div class="stat-title">Most developers are already burned out</div>
+                <div class="stat-explain">In a survey by Haystack Analytics, 83% of software developers reported experiencing burnout. AI tools were supposed to help &mdash; but Google's DORA 2024 report found burnout rates haven't improved despite widespread AI adoption.</div>
+                <div class="stat-source"><a href="https://www.haystack.tech/blog/83-percent-of-developers-suffer-from-burnout" target="_blank" rel="noopener">Haystack/Survation survey, 2021</a></div>
             </div>
         </div>
     </section>
@@ -385,8 +393,8 @@
                 <div class="feature-icon">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                 </div>
-                <h3>DRS Score</h3>
-                <p>Your Developer Recovery Score. A 0-100 composite of strain, recovery, and readiness &mdash; modeled after WHOOP. Green means go. Red means step away.</p>
+                <h3>Recovery Score</h3>
+                <p>A 0-100 composite of coding strain, recovery, and readiness &mdash; like WHOOP but for your brain. Green means you're fresh. Red means step away from the keyboard.</p>
                 <span class="feature-tag">strain 0-21</span>
             </div>
             <div class="feature-card">
@@ -425,8 +433,8 @@
             </div>
             <div class="step">
                 <div class="step-num">3</div>
-                <h3>Get your DRS</h3>
-                <p>Recovery score, predicted ETAs, and smart break nudges. All data stays on your Mac.</p>
+                <h3>Get your recovery score</h3>
+                <p>See how strained you are, how long the session will really take, and when to stop. All data stays on your Mac.</p>
             </div>
         </div>
     </section>
