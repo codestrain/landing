@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeStrain — There is no ETA in vibe coding. We fix that.</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a2e;
+            --bg-card: #16162a;
+            --accent: #e2b714;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0b0;
+            --drs-green: #22c55e;
+            --drs-yellow: #eab308;
+            --drs-red: #ef4444;
+            --border: #2a2a3e;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Navigation ─────────────────────────────────────────── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(15, 15, 15, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        /* ── Hero Section ───────────────────────────────────────── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+            background: radial-gradient(ellipse at 50% 30%, rgba(26, 26, 46, 0.6) 0%, var(--bg-primary) 70%);
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(226, 183, 20, 0.1);
+            border: 1px solid rgba(226, 183, 20, 0.3);
+            border-radius: 100px;
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            max-width: 800px;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--accent) 0%, #f0d060 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--text-secondary);
+            max-width: 640px;
+            margin-bottom: 3rem;
+            line-height: 1.7;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            padding: 0.85rem 2rem;
+            background: var(--accent);
+            color: #0f0f0f;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 30px rgba(226, 183, 20, 0.3);
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            padding: 0.85rem 2rem;
+            background: transparent;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: border-color 0.2s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-secondary);
+        }
+
+        /* ── Evidence Stats Bar ─────────────────────────────────── */
+        .stats-bar {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 3rem 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stat-item .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .stat-item:nth-child(1) .stat-number { color: var(--drs-red); }
+        .stat-item:nth-child(2) .stat-number { color: var(--drs-yellow); }
+        .stat-item:nth-child(3) .stat-number { color: var(--drs-red); }
+
+        .stat-item .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .stat-item .stat-source {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        /* ── Features Section ───────────────────────────────────── */
+        .features {
+            padding: 6rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .features .section-sub {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 3.5rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .feature-card:nth-child(1) .feature-icon {
+            background: rgba(34, 197, 94, 0.15);
+        }
+        .feature-card:nth-child(2) .feature-icon {
+            background: rgba(226, 183, 20, 0.15);
+        }
+        .feature-card:nth-child(3) .feature-icon {
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        .feature-card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .feature-tag {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 100px;
+            background: rgba(226, 183, 20, 0.1);
+            color: var(--accent);
+        }
+
+        /* ── How It Works ───────────────────────────────────────── */
+        .how-it-works {
+            padding: 6rem 2rem;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            letter-spacing: -0.02em;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(226, 183, 20, 0.15);
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .step h3 {
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* ── Waitlist Section ───────────────────────────────────── */
+        .waitlist {
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .waitlist h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .waitlist .section-sub {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .waitlist-form {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .waitlist-form input[type="email"] {
+            flex: 1;
+            min-width: 240px;
+            padding: 0.85rem 1.25rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .waitlist-form input[type="email"]::placeholder {
+            color: #555;
+        }
+
+        .waitlist-form input[type="email"]:focus {
+            border-color: var(--accent);
+        }
+
+        .waitlist-form button {
+            padding: 0.85rem 2rem;
+            background: var(--accent);
+            color: #0f0f0f;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .waitlist-form button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 30px rgba(226, 183, 20, 0.3);
+        }
+
+        .waitlist-privacy {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        .waitlist-privacy a {
+            color: var(--text-secondary);
+            text-decoration: underline;
+        }
+
+        /* ── Footer ─────────────────────────────────────────────── */
+        footer {
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .footer-copy {
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        /* ── Responsive ─────────────────────────────────────────── */
+        @media (max-width: 640px) {
+            nav {
+                padding: 0.75rem 1rem;
+            }
+            .nav-links {
+                gap: 1rem;
+            }
+            .hero {
+                padding: 5rem 1.25rem 3rem;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .waitlist-form {
+                flex-direction: column;
+            }
+            .waitlist-form input[type="email"] {
+                min-width: unset;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#" class="nav-brand">CodeStrain</a>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#waitlist">Waitlist</a></li>
+            <li><a href="https://github.com/codestrain" target="_blank">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-badge">WHOOP for AI-Assisted Development</div>
+        <h1>There is no ETA in vibe coding. <span>We fix that.</span></h1>
+        <p class="hero-sub">
+            Claude thinks your project takes 2 months. It takes 16 hours of vibe coding + 2 weeks of debugging. CodeStrain knows the difference.
+        </p>
+        <div class="hero-cta">
+            <a href="#waitlist" class="btn-primary">Join the Waitlist</a>
+            <a href="https://github.com/codestrain" class="btn-secondary" target="_blank">View on GitHub</a>
+        </div>
+    </section>
+
+    <!-- Evidence Stats Bar -->
+    <section class="stats-bar">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">19%</div>
+                <div class="stat-label">Slower with AI tools</div>
+                <div class="stat-source">METR, 2024</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">43pt</div>
+                <div class="stat-label">Perception gap (feel faster, go slower)</div>
+                <div class="stat-source">Uplevel, 2024</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">83%</div>
+                <div class="stat-label">Developers report burnout</div>
+                <div class="stat-source">Haystack Analytics, 2024</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <h2>Know your actual output</h2>
+        <p class="section-sub">
+            Three core metrics that turn vibe coding chaos into measurable, recoverable work.
+        </p>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </div>
+                <h3>DRS Score</h3>
+                <p>
+                    Your Developer Recovery Score. A 0-100 composite of strain, recovery, and readiness modeled after WHOOP. Green means go. Red means step away.
+                </p>
+                <span class="feature-tag">Strain 0-21 scale</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e2b714" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <h3>ETA Predictions</h3>
+                <p>
+                    Phase-aware ML predictions. You estimate Phase 2 (generation). Our model learns your personal multipliers for planning, debugging, iteration, and integration.
+                </p>
+                <span class="feature-tag">6-phase session model</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </div>
+                <h3>Break Personas</h3>
+                <p>
+                    Context-aware nudges with personality. The Drill Sergeant, The Zen Master, The Hype Beast. Pick the persona that actually makes you take breaks.
+                </p>
+                <span class="feature-tag">Smart break scheduling</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <h2>How it works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Install the menu bar app</h3>
+                <p>macOS native. Watches your Claude Code sessions via JSONL logs. Zero configuration needed.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Code like you always do</h3>
+                <p>CodeStrain runs silently in the background. No workflow changes. No extra clicks.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Get your DRS</h3>
+                <p>See your recovery score, predicted ETAs, and take break nudges. All data stays on your device.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Waitlist -->
+    <section class="waitlist" id="waitlist">
+        <h2>Get early access</h2>
+        <p class="section-sub">
+            Join the waitlist for CodeStrain. Free tier is fully local, no server needed. PRO adds ML predictions and cloud sync.
+        </p>
+        <form class="waitlist-form" action="https://formspree.io/f/your-form-id" method="POST">
+            <input type="email" name="email" placeholder="you@example.com" required>
+            <button type="submit">Join Waitlist</button>
+        </form>
+        <p class="waitlist-privacy">
+            No spam. Unsubscribe anytime.
+            <a href="privacy.html">Privacy Policy</a>
+        </p>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="https://codestrain.dev">codestrain.dev</a>
+            <a href="https://github.com/codestrain" target="_blank">GitHub</a>
+            <a href="https://x.com/getcodestrain" target="_blank">@getcodestrain</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+        </div>
+        <p class="footer-copy">
+            CodeStrain by HubLab.ai. All rights reserved.
+        </p>
+    </footer>
+
+</body>
+</html>

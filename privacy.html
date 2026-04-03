@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy — CodeStrain</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #1a1a2e;
+            --accent: #e2b714;
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0b0;
+            --border: #2a2a3e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(15, 15, 15, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .content {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 7rem 2rem 4rem;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .last-updated {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 3rem;
+        }
+
+        h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p, li {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        strong {
+            color: var(--text-primary);
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        .highlight-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .highlight-box p {
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin: 0 0.75rem;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="nav-brand">CodeStrain</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="terms.html">Terms</a></li>
+        </ul>
+    </nav>
+
+    <div class="content">
+        <h1>Privacy Policy</h1>
+        <p class="last-updated">Last updated: April 2026</p>
+
+        <div class="highlight-box">
+            <p><strong>The short version:</strong> CodeStrain is privacy-first by design. Your code, prompts, and file contents never leave your device. The server never sees your source code. Period.</p>
+        </div>
+
+        <h2>1. Who We Are</h2>
+        <p>
+            CodeStrain is operated by TOO HubLab ("HubLab.ai"), an Astana Hub resident entity registered in the Republic of Kazakhstan. This policy applies to the CodeStrain macOS application, CLI tool, and cloud services at codestrain.dev.
+        </p>
+
+        <h2>2. Data We Collect</h2>
+
+        <h3>2.1 Data Stored Locally (On Your Device Only)</h3>
+        <p>The CodeStrain desktop app collects and stores the following data exclusively on your local machine:</p>
+        <ul>
+            <li><strong>Session metadata:</strong> timestamps, durations, turn counts, token counts</li>
+            <li><strong>Phase classifications:</strong> planning, generation, debug, iteration, integration</li>
+            <li><strong>Cost estimates:</strong> derived from token counts and public model pricing</li>
+            <li><strong>DRS scores:</strong> strain, recovery, and readiness calculations</li>
+            <li><strong>Break events:</strong> when breaks were suggested, taken, or skipped</li>
+        </ul>
+        <p>
+            <strong>We never store your code, prompts, AI responses, or file contents.</strong> The app reads Claude Code JSONL logs to extract metadata only. Content is processed in memory and immediately discarded.
+        </p>
+
+        <h3>2.2 Data Synced to Server (PRO/TEAM Only)</h3>
+        <p>If you subscribe to CodeStrain PRO or TEAM, the following <strong>encrypted feature vectors</strong> are synced to our server for ML predictions:</p>
+        <ul>
+            <li>Session durations and phase sequences</li>
+            <li>Token counts (input/output aggregates)</li>
+            <li>Debug loop counts and error frequency ratios</li>
+            <li>Timing patterns (time-of-day, day-of-week)</li>
+        </ul>
+        <p>
+            These are numerical features only. No code, no prompts, no file paths, no project names. Feature vectors are encrypted in transit (TLS 1.3) and at rest (AES-256).
+        </p>
+
+        <h3>2.3 Account Data (PRO/TEAM Only)</h3>
+        <ul>
+            <li>Email address (for authentication and communication)</li>
+            <li>Payment information (processed by Stripe; we do not store card numbers)</li>
+            <li>Subscription status and billing history</li>
+        </ul>
+
+        <h3>2.4 Data We Never Collect</h3>
+        <ul>
+            <li>Source code or file contents</li>
+            <li>AI prompts or responses</li>
+            <li>File paths or project directory names</li>
+            <li>Clipboard contents</li>
+            <li>Screen recordings or screenshots</li>
+            <li>Keystroke logs</li>
+            <li>Data from other applications</li>
+        </ul>
+
+        <h2>3. How We Use Your Data</h2>
+        <ul>
+            <li><strong>Local analysis:</strong> computing DRS scores, phase detection, break scheduling</li>
+            <li><strong>ML predictions (PRO):</strong> training per-user models for ETA and strain forecasting</li>
+            <li><strong>Service improvement:</strong> aggregate, anonymized statistics to improve our models</li>
+            <li><strong>Communication:</strong> account-related emails, product updates (opt-in only)</li>
+        </ul>
+
+        <h2>4. Data Storage and Security</h2>
+        <ul>
+            <li><strong>Local data:</strong> stored in SQLite at <code>~/Library/Application Support/CodeStrain/</code></li>
+            <li><strong>Server data:</strong> PostgreSQL with TimescaleDB, hosted on dedicated hardware</li>
+            <li><strong>Encryption:</strong> TLS 1.3 in transit, AES-256 at rest</li>
+            <li><strong>Access:</strong> role-based access controls, minimal-privilege principle</li>
+        </ul>
+
+        <h2>5. Data Retention</h2>
+        <ul>
+            <li><strong>FREE tier:</strong> 7 days of local history (configurable)</li>
+            <li><strong>PRO tier:</strong> 90 days of synced history; local history unlimited</li>
+            <li><strong>After cancellation:</strong> server data deleted within 30 days</li>
+            <li><strong>Local data:</strong> persists until you delete it or uninstall the app</li>
+        </ul>
+
+        <h2>6. Your Rights (GDPR)</h2>
+        <p>Under the General Data Protection Regulation and similar laws, you have the right to:</p>
+        <ul>
+            <li><strong>Access (Article 15):</strong> Export all your data as JSON via Settings > Export Data</li>
+            <li><strong>Rectification (Article 16):</strong> Correct your account information at any time</li>
+            <li><strong>Erasure (Article 17):</strong> Delete all your data via Settings > Delete All Data</li>
+            <li><strong>Portability (Article 20):</strong> Download your data in a standard JSON format</li>
+            <li><strong>Objection (Article 21):</strong> Opt out of data processing for ML model training</li>
+        </ul>
+        <p>
+            The FREE tier is fully local with no server component, so GDPR data-subject requests apply only to PRO/TEAM subscribers.
+        </p>
+
+        <h2>7. Third-Party Services</h2>
+        <ul>
+            <li><strong>Stripe:</strong> payment processing (<a href="https://stripe.com/privacy">stripe.com/privacy</a>)</li>
+            <li><strong>Formspree:</strong> waitlist form processing (landing page only)</li>
+        </ul>
+        <p>We do not use analytics trackers, advertising networks, or data brokers.</p>
+
+        <h2>8. Children</h2>
+        <p>CodeStrain is not directed at children under 16. We do not knowingly collect data from children.</p>
+
+        <h2>9. Changes to This Policy</h2>
+        <p>We will notify users of material changes via email (PRO/TEAM) or in-app notice. The "Last updated" date at the top reflects the most recent revision.</p>
+
+        <h2>10. Contact</h2>
+        <p>
+            For privacy inquiries, data requests, or concerns:<br>
+            Email: <strong>privacy@codestrain.dev</strong><br>
+            Entity: TOO HubLab, Astana Hub, Astana, Kazakhstan
+        </p>
+    </div>
+
+    <footer>
+        <a href="index.html">codestrain.dev</a>
+        <a href="terms.html">Terms of Service</a>
+        <a href="privacy.html">Privacy Policy</a>
+    </footer>
+
+</body>
+</html>
