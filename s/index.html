@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shared codestrain report</title>
+<meta name="description" content="Anonymized codestrain CLI report — your AI coding strain, distilled.">
+<meta property="og:title" content="codestrain — anonymized report">
+<meta property="og:description" content="Generated locally, encoded into the URL itself. No server saw this data.">
+<meta property="og:image" content="https://codestrain.dev/assets/logo.png">
+<meta name="twitter:card" content="summary">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --bg-card: #16213e;
+    --fg: #e7ecf3;
+    --fg-dim: #8a92a3;
+    --accent: #e2b714;
+    --green: #4ade80;
+    --red: #ef4444;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); }
+  body {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px;
+  }
+  header {
+    width: 100%;
+    max-width: 760px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header a { color: var(--fg-dim); text-decoration: none; }
+  header a:hover { color: var(--accent); }
+  .brand { color: var(--accent); font-weight: 600; }
+  main {
+    width: 100%;
+    max-width: 760px;
+    background: var(--bg-card);
+    border: 1px solid #2a3552;
+    border-radius: 8px;
+    padding: 24px;
+    overflow-x: auto;
+  }
+  pre {
+    margin: 0;
+    white-space: pre;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--fg);
+  }
+  .actions {
+    width: 100%;
+    max-width: 760px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .actions a, .actions button {
+    background: transparent;
+    color: var(--fg-dim);
+    border: 1px solid #2a3552;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .actions a:hover, .actions button:hover { color: var(--accent); border-color: var(--accent); }
+  .err {
+    color: var(--red);
+    margin: 16px 0;
+    padding: 12px;
+    border: 1px solid var(--red);
+    border-radius: 6px;
+    background: rgba(239,68,68,0.05);
+  }
+  .footer {
+    width: 100%;
+    max-width: 760px;
+    margin-top: 32px;
+    color: var(--fg-dim);
+    font-size: 12px;
+    text-align: center;
+  }
+  .footer a { color: var(--fg-dim); }
+  .footer a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <a href="/"><span class="brand">codestrain</span></a>
+  <a href="https://github.com/codestrain/codestrain-cli">GitHub</a>
+</header>
+
+<main>
+  <pre id="report">Loading…</pre>
+  <div id="error" class="err" style="display:none"></div>
+</main>
+
+<div class="actions">
+  <button id="copy">Copy</button>
+  <a id="tweet" href="#" target="_blank" rel="noopener">Share on X</a>
+  <a id="hn" href="#" target="_blank" rel="noopener">Submit to HN</a>
+  <a href="/">Try it yourself</a>
+</div>
+
+<div class="footer">
+  This report was generated locally by <a href="https://github.com/codestrain/codestrain-cli">codestrain CLI</a>
+  and encoded into the URL. <strong>No server has seen its contents</strong> —
+  the data lives only in the link you opened.
+</div>
+
+<script>
+(async () => {
+  const $ = (id) => document.getElementById(id);
+  const reportEl = $('report');
+  const errEl = $('error');
+
+  const showError = (msg) => {
+    reportEl.style.display = 'none';
+    errEl.style.display = 'block';
+    errEl.textContent = msg;
+  };
+
+  const params = new URLSearchParams(location.search);
+  let d = params.get('d');
+  if (!d) {
+    showError("No share data found in the URL. Did the link get truncated?");
+    return;
+  }
+
+  // Restore base64-urlsafe padding (the encoder strips trailing '=').
+  while (d.length % 4) d += '=';
+  // base64-urlsafe → base64-standard for atob().
+  const b64 = d.replace(/-/g, '+').replace(/_/g, '/');
+
+  let bytes;
+  try {
+    const bin = atob(b64);
+    bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  } catch (e) {
+    showError("Failed to decode the URL. It may have been mangled in transit.");
+    return;
+  }
+
+  let text;
+  if (typeof DecompressionStream !== 'undefined') {
+    try {
+      const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+      text = await new Response(stream).text();
+    } catch (e) {
+      showError("Failed to decompress the report. Try opening the link in a recent Chrome/Safari/Firefox.");
+      return;
+    }
+  } else {
+    showError("Your browser doesn't support DecompressionStream (gzip). Try a recent Chrome/Safari/Firefox.");
+    return;
+  }
+
+  reportEl.textContent = text;
+
+  // Wire actions
+  $('copy').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      $('copy').textContent = 'Copied';
+      setTimeout(() => { $('copy').textContent = 'Copy'; }, 1500);
+    } catch (e) { /* ignore */ }
+  });
+
+  const tweetText = "My codestrain report — anonymized. " + location.href;
+  $('tweet').href = "https://x.com/intent/post?text=" + encodeURIComponent(tweetText);
+
+  const hnTitle = "codestrain — your AI coding recovery score from the terminal";
+  $('hn').href = "https://news.ycombinator.com/submitlink?u="
+    + encodeURIComponent("https://codestrain.dev")
+    + "&t=" + encodeURIComponent(hnTitle);
+})();
+</script>
+</body>
+</html>
