@@ -143,36 +143,72 @@
     return;
   }
 
-  // Restore base64-urlsafe padding (the encoder strips trailing '=').
-  while (d.length % 4) d += '=';
-  // base64-urlsafe → base64-standard for atob().
-  const b64 = d.replace(/-/g, '+').replace(/_/g, '/');
+  // Tolerant base64-urlsafe decoder.
+  // - URLSearchParams.get already decodes percent-escapes.
+  // - The encoder strips trailing `=` padding; we restore it.
+  // - Truncation in transit (email line-wrap, terminal soft-wrap, chat
+  //   shorteners) sometimes drops 1-2 trailing chars. If the encoded
+  //   length is 4k+1 (mathematically impossible for valid base64), trim
+  //   the trailing char(s) and try again.
+  function decodeBase64Urlsafe(raw) {
+    let s = raw.replace(/-/g, '+').replace(/_/g, '/').replace(/\s+/g, '');
+    // Drop up to 2 trailing chars to coerce length into 4k / 4k+2 / 4k+3.
+    for (let drop = 0; drop <= 2; drop++) {
+      let candidate = drop === 0 ? s : s.slice(0, -drop);
+      while (candidate.length % 4) candidate += '=';
+      try {
+        const bin = atob(candidate);
+        const out = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+        return { bytes: out, droppedTail: drop };
+      } catch (e) {
+        if (drop === 2) throw e;
+      }
+    }
+    throw new Error("unreachable");
+  }
 
-  let bytes;
+  let bytes, droppedTail = 0;
   try {
-    const bin = atob(b64);
-    bytes = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    const result = decodeBase64Urlsafe(d);
+    bytes = result.bytes;
+    droppedTail = result.droppedTail;
   } catch (e) {
-    showError("Failed to decode the URL. It may have been mangled in transit.");
+    showError(
+      "Failed to decode the URL. It looks like a few characters were lost in "
+      + "transit (chat, email, or terminal soft-wrap can do this). "
+      + "Ask the sender to re-run `codestrain --share` and resend the link."
+    );
     return;
   }
 
-  let text;
-  if (typeof DecompressionStream !== 'undefined') {
-    try {
-      const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
-      text = await new Response(stream).text();
-    } catch (e) {
-      showError("Failed to decompress the report. Try opening the link in a recent Chrome/Safari/Firefox.");
-      return;
-    }
-  } else {
+  if (typeof DecompressionStream === 'undefined') {
     showError("Your browser doesn't support DecompressionStream (gzip). Try a recent Chrome/Safari/Firefox.");
+    return;
+  }
+  let text;
+  try {
+    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+    text = await new Response(stream).text();
+  } catch (e) {
+    showError(
+      "Decoded the URL, but the report content is corrupted — likely truncated "
+      + "in transit. Ask the sender to re-run `codestrain --share` and copy the "
+      + "full URL (one continuous line, no breaks)."
+    );
     return;
   }
 
   reportEl.textContent = text;
+  if (droppedTail > 0) {
+    const note = document.createElement('div');
+    note.className = 'err';
+    note.style.display = 'block';
+    note.style.color = 'var(--accent)';
+    note.style.borderColor = 'var(--accent)';
+    note.textContent = `Note: ${droppedTail} trailing character(s) were dropped to recover this report — looks like the link was line-wrapped or shortened in transit. Output may be slightly incomplete.`;
+    reportEl.parentElement.insertBefore(note, reportEl);
+  }
 
   // Wire actions
   $('copy').addEventListener('click', async () => {
