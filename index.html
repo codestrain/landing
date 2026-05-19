@@ -279,6 +279,57 @@
         .step h3 { font-size: var(--text-base); font-weight: 600; margin-bottom: var(--sp-2); }
         .step p { color: var(--text-secondary); font-size: var(--text-sm); line-height: 1.6; }
 
+        /* ── Install ───────────────────────────────────────────── */
+        .install {
+            padding: var(--sp-24) var(--sp-8);
+            max-width: var(--max-w); margin: 0 auto; text-align: center;
+        }
+        .install h2 {
+            font-size: var(--text-3xl); font-weight: 700;
+            letter-spacing: -0.02em; margin-bottom: var(--sp-6);
+        }
+        .install-cmd {
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+            max-width: 640px; margin: 0 auto var(--sp-4);
+            padding: var(--sp-5) var(--sp-12) var(--sp-5) var(--sp-6);
+            background: #050507;
+            border: 1px solid var(--accent-border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-glow);
+            font-family: var(--font-mono);
+            font-size: var(--text-lg); font-weight: 500;
+            color: var(--accent);
+            overflow-x: auto;
+            text-align: left;
+        }
+        .install-cmd code {
+            font-family: inherit; color: inherit;
+            white-space: nowrap;
+        }
+        .install-copy {
+            position: absolute; top: var(--sp-2); right: var(--sp-2);
+            padding: var(--sp-2) var(--sp-3);
+            background: transparent;
+            border: 1px solid var(--border-hover);
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.06em;
+            cursor: pointer; transition: all 0.15s ease;
+        }
+        .install-copy:hover { color: var(--accent); border-color: var(--accent-border); }
+        .install-copy.copied { color: var(--drs-green); border-color: var(--drs-green); }
+        .install-meta {
+            color: var(--text-muted); font-size: var(--text-sm);
+        }
+        .install-meta a {
+            color: var(--text-secondary); text-decoration: none;
+            border-bottom: 1px dotted var(--text-muted);
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .install-meta a:hover { color: var(--accent); border-color: var(--accent); }
+
         /* ── Waitlist ──────────────────────────────────────────── */
         .waitlist {
             padding: var(--sp-24) var(--sp-8); text-align: center;
@@ -335,6 +386,7 @@
             .hero { padding: var(--sp-20) var(--sp-5) var(--sp-12); }
             .waitlist-form { flex-direction: column; }
             .waitlist-form input[type="email"] { min-width: unset; }
+            .install-cmd { font-size: var(--text-base); padding-right: var(--sp-10); }
         }
     </style>
 </head>
@@ -439,6 +491,19 @@
         </div>
     </section>
 
+    <section class="install" id="install">
+        <h2>Install</h2>
+        <pre class="install-cmd"><code id="install-cmd-brew">brew install codestrain/tap/codestrain</code><button type="button" class="install-copy" data-copy-target="install-cmd-brew" aria-label="Copy Homebrew install command">Copy</button></pre>
+        <pre class="install-cmd"><code id="install-cmd-pipx">pipx install codestrain</code><button type="button" class="install-copy" data-copy-target="install-cmd-pipx" aria-label="Copy pipx install command">Copy</button></pre>
+        <pre class="install-cmd"><code id="install-cmd-curl">curl -fsSL codestrain.dev/install | sh</code><button type="button" class="install-copy" data-copy-target="install-cmd-curl" aria-label="Copy one-liner install command">Copy</button></pre>
+        <p class="install-meta">
+            macOS &amp; Linux &middot; Python 3.9+ &middot;
+            <a href="/install">View script</a> &middot;
+            <a href="https://github.com/codestrain/codestrain-cli" target="_blank" rel="noopener">GitHub</a> &middot;
+            <a href="https://github.com/codestrain/homebrew-tap" target="_blank" rel="noopener">Homebrew tap</a>
+        </p>
+    </section>
+
     <section class="waitlist" id="waitlist">
         <h2>Get early access</h2>
         <p>Free tier is fully local, no server needed. PRO adds ML predictions and encrypted cloud sync.</p>
@@ -459,6 +524,44 @@
         </div>
         <p class="footer-copy">&copy; 2026 HubLab.ai &middot; CodeStrain</p>
     </footer>
+
+    <script>
+        (function () {
+            var btn = document.querySelector('.install-copy');
+            if (!btn) return;
+            btn.addEventListener('click', function () {
+                var target = document.getElementById(btn.getAttribute('data-copy-target'));
+                if (!target) return;
+                var text = target.textContent;
+                var done = function () {
+                    var prev = btn.textContent;
+                    btn.textContent = 'Copied';
+                    btn.classList.add('copied');
+                    setTimeout(function () {
+                        btn.textContent = prev;
+                        btn.classList.remove('copied');
+                    }, 1600);
+                };
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(done, function () { fallback(text, done); });
+                } else {
+                    fallback(text, done);
+                }
+            });
+            function fallback(text, done) {
+                var ta = document.createElement('textarea');
+                ta.value = text;
+                ta.setAttribute('readonly', '');
+                ta.style.position = 'absolute';
+                ta.style.left = '-9999px';
+                document.body.appendChild(ta);
+                ta.select();
+                try { document.execCommand('copy'); } catch (e) {}
+                document.body.removeChild(ta);
+                done();
+            }
+        })();
+    </script>
 
 </body>
 </html>
