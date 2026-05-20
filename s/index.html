@@ -59,6 +59,17 @@
     font-size: 13px;
     color: var(--fg);
   }
+  /* ANSI SGR → CSS. Matches the palette emitted by codestrain_cli.py
+     (see class Colors). Keeps the shared report visually identical to
+     what the user saw in their terminal. */
+  .ansi-1 { font-weight: 600; }
+  .ansi-2 { opacity: 0.55; }
+  .ansi-31 { color: var(--red); }
+  .ansi-32 { color: var(--green); }
+  .ansi-33 { color: var(--accent); }
+  .ansi-36 { color: #22d3ee; }
+  .ansi-37 { color: var(--fg); }
+  .ansi-256-214 { color: var(--accent); }  /* AMBER */
   .actions {
     width: 100%;
     max-width: 760px;
@@ -199,7 +210,47 @@
     return;
   }
 
-  reportEl.textContent = text;
+  // Render ANSI SGR escapes as <span> with CSS classes. Supports reset (0),
+  // bold (1), dim (2), 8-color foreground (30–37), and 256-color foreground
+  // (38;5;N) — that's the full set codestrain_cli.py emits. Anything else is
+  // silently dropped, keeping the output clean if the CLI grows new codes.
+  function ansiToHtml(input) {
+    const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const re = /\x1b\[((?:\d+;)*\d+)m/g;
+    let out = '';
+    let last = 0;
+    let openClasses = [];
+    let m;
+    const close = () => { if (openClasses.length) { out += '</span>'; openClasses = []; } };
+    while ((m = re.exec(input)) !== null) {
+      out += esc(input.slice(last, m.index));
+      const codes = m[1].split(';').map((n) => parseInt(n, 10));
+      close();
+      const next = [];
+      for (let i = 0; i < codes.length; i++) {
+        const code = codes[i];
+        if (code === 0) {
+          next.length = 0;
+        } else if (code === 1 || code === 2) {
+          next.push('ansi-' + code);
+        } else if (code >= 30 && code <= 37) {
+          next.push('ansi-' + code);
+        } else if (code === 38 && codes[i + 1] === 5 && Number.isFinite(codes[i + 2])) {
+          next.push('ansi-256-' + codes[i + 2]);
+          i += 2;
+        }
+      }
+      if (next.length) {
+        openClasses = next;
+        out += `<span class="${next.join(' ')}">`;
+      }
+      last = re.lastIndex;
+    }
+    out += esc(input.slice(last));
+    close();
+    return out;
+  }
+  reportEl.innerHTML = ansiToHtml(text);
   if (droppedTail > 0) {
     const note = document.createElement('div');
     note.className = 'err';
